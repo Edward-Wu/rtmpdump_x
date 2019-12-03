@@ -56,7 +56,7 @@
 #define RD_NO_CONNECT		3
 #define RD_WAITING          4
 
-#define DEF_TIMEOUT	30	/* seconds */
+#define DEF_TIMEOUT	10	/* seconds */
 #define DEF_BUFTIME	(10 * 60 * 60 * 1000)	/* 10 hours default */
 #define DEF_SKIPFRM	0
 
