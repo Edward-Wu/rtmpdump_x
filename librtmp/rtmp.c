@@ -1135,9 +1135,12 @@ int
 RTMP_ReconnectStream(RTMP *r, int seekTime)
 {
   RTMP_DeleteStream(r);
-
-  RTMP_SendCreateStream(r);
-
+  
+  //Changed by Edward.Wu
+  RTMP_Close(r);
+  //RTMP_SendCreateStream(r);
+  RTMP_Connect(r, NULL);
+  
   return RTMP_ConnectStream(r, seekTime);
 }
 
