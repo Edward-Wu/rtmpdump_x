@@ -639,6 +639,18 @@ static int ff_mkdir_p(const char *path)
     return ret;
 }
 
+static void av_close_statistic_fd(RTMP_STATISTIC_INFO *rt)
+{
+    //close old file
+    if (rt->fd_statistic > 0) {
+        rtmp_log("close filename='%s', rt->fd_statistic=%d.\n",
+                rt->file_name_statistic, rt->fd_statistic);
+        close(rt->fd_statistic);
+        rt->fd_statistic = 0;
+    }
+
+}
+
 static void av_write_statistic_info(RTMP_STATISTIC_INFO *rt, int data_len)
 {
     char temp[1024] = {0};
@@ -656,12 +668,7 @@ static void av_write_statistic_info(RTMP_STATISTIC_INFO *rt, int data_len)
         cur_file_time = cur_systime_sec/300*300;//5min interval
         if (cur_file_time != rt->last_file_time) {
             //close old file
-            if (rt->fd_statistic > 0) {
-                rtmp_log("close filename='%s', rt->fd_statistic=%d.\n",
-                        rt->file_name_statistic, rt->fd_statistic);
-                close(rt->fd_statistic);
-                rt->fd_statistic = 0;
-            }
+            av_close_statistic_fd(rt);
         }
         if (rt->fd_statistic <= 0) {
             //check path at first
@@ -1770,6 +1777,9 @@ clean:
     fclose(file);
 
   CleanupSockets();
+
+  //close statistic file
+  av_close_statistic_fd(&rsi);
 
 #ifdef _DEBUG
   if (netstackdump != 0)
